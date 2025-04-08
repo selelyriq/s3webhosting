@@ -59,3 +59,22 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
   depends_on = [aws_s3_bucket_public_access_block.public_access_block]
 }
+
+resource "aws_s3_bucket_cors_configuration" "cors_configuration" {
+  bucket = aws_s3_bucket.s3_bucket.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = []
+    max_age_seconds = 3000
+  }
+}
+
+resource "aws_s3_object" "index" {
+  bucket       = aws_s3_bucket.s3_bucket.id
+  key          = "index.html"
+  source       = "${path.module}/index.html"
+  content_type = "text/html"
+}
